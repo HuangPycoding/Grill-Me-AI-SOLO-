@@ -1,0 +1,6 @@
+{
+  "name": "Grill-Me AI",
+  "description": "A brutal resume roaster and mock interview stress-test powered by Gemini API. Built for university students to face a harsh reality check before real dev interviews.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
