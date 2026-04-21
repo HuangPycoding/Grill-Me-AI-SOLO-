@@ -38,9 +38,19 @@ async function callOpenAICompatibleAPI(apiKey: string, baseUrl: string, modelNam
   let content = data.choices[0].message.content;
   
   // 清理可能存在的 markdown 代码块包裹 (针对某些模型强制输出 markdown 标记的修正)
-  content = content.replace(/```json\n?/g, '').replace(/```\n?/g, '').trim();
+  content = content.replace(/```json\n?/gi, '').replace(/```\n?/g, '').trim();
 
-  return JSON.parse(content);
+  // 进一步防御：提取大括号内部的内容（有些模型会前言不搭后语）
+  const jsonMatch = content.match(/\{[\s\S]*\}/);
+  if (jsonMatch) {
+    content = jsonMatch[0];
+  }
+
+  try {
+    return JSON.parse(content);
+  } catch (err) {
+    throw new Error("模型返回的数据无法解析为有效格式，可能是 API 过载或返回了非预期结构，请重试。");
+  }
 }
 
 export async function analyzeResume(role: string, resume: string, apiKey: string, baseUrl: string, modelName: string): Promise<AssessmentData> {
