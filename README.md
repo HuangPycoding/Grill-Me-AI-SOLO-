@@ -70,7 +70,8 @@
 1. **确立冷酷的美学基调**：
 
 我没有让它用传统的 UI 库。我对 SOLO 的原话是：*“我需要一个黑客马拉松风格的，全黑背景、带有绿色/红色警告色调的页面，没有任何多余的按钮，要给人一种压迫感。”* SOLO 立刻给了我基于 Tailwind 的暗黑主题骨架。
-![|690x341, 75%](upload://5liVCwSi8Am4FUlVgamCNERl3Fb.jpeg)
+<img width="1497" height="725" alt="image" src="https://github.com/user-attachments/assets/9ed6f03f-3f86-43aa-a9b0-c4b5eabcbc74" />
+
 
 2. **拆解并死磕大模型 JSON 约束**：
 
@@ -81,8 +82,8 @@
 3. **那些极致的像素级调整**：
 
 我想在底部放几个赞助商（百炼、TRAE等）的跑马灯，但原带的 SVG 甚至存在镂空坐标算反的 bug。我让 SOLO 直接在底下帮我从数学层面重新计算了 SVG 坐标，重构了字母的几何逻辑，然后加入了无限滚动。这种细节调整，AI 现在做比我手写不知强多少倍。
+<img width="1483" height="639" alt="image" src="https://github.com/user-attachments/assets/6d4320be-e5bf-48ac-8a3a-599005886bce" />
 
-![image|690x369, 75%](upload://epG717Sfmv1DAEI0mIN6X787DuS.png)
 
 **踩过的坑：**
 
