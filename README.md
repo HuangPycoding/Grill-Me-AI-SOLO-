@@ -24,7 +24,7 @@
 **Grill-Me AI** 是一个基于 React + 无服务器前端架构打造的 Web 应用。通过接入 OpenAI 兼容格式的大语言模型（如阿里云百炼 qwen-flash、DeepSeek 等），为你提供**零伪装、极高压**的实战面试模拟。它不仅能一眼看穿你简历里的包装，还能顺着你的软肋层层逼问，直到你暴露出真实水平。
 
 <div align="center">
-  <!-- 建议在这里贴入您的首页或能力雷达图截图 -->
+  
   <img width="1352" height="627" alt="image" src="https://github.com/user-attachments/assets/99b3715f-255d-4703-8354-55bc07ec58db" />
 
 
