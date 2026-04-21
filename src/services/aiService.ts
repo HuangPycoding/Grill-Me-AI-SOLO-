@@ -35,21 +35,23 @@ async function callOpenAICompatibleAPI(apiKey: string, baseUrl: string, modelNam
   }
 
   const data = await response.json();
-  let content = data.choices[0].message.content;
+  let content = data.choices[0].message.content || "";
   
-  // 清理可能存在的 markdown 代码块包裹 (针对某些模型强制输出 markdown 标记的修正)
-  content = content.replace(/```json\n?/gi, '').replace(/```\n?/g, '').trim();
+  // 核心逻辑：大部分模型可能包含多余的话术，导致直接 JSON.parse 崩溃
+  // 1. 先尝试最暴力的替换 markdown block 字符
+  let cleanContent = content.replace(/```json\n?/gi, '').replace(/```\n?/g, '').trim();
 
-  // 进一步防御：提取大括号内部的内容（有些模型会前言不搭后语）
-  const jsonMatch = content.match(/\{[\s\S]*\}/);
+  // 2. 如果替换后依然有前缀（如："好的，结果如下：{..."），直接用正则切出最外层 {}
+  const jsonMatch = cleanContent.match(/\{[\s\S]*\}/);
   if (jsonMatch) {
-    content = jsonMatch[0];
+    cleanContent = jsonMatch[0];
   }
 
   try {
-    return JSON.parse(content);
+    return JSON.parse(cleanContent);
   } catch (err) {
-    throw new Error("模型返回的数据无法解析为有效格式，可能是 API 过载或返回了非预期结构，请重试。");
+    console.error("解析模型返回的 JSON 失败。原始返回结果：", content);
+    throw new Error("大模型在脑子里想太多了，返回的格式乱码（无法解析为 JSON）。请退回重试，或者换个更聪明的模型（推荐 qwen-max）。");
   }
 }
 
