@@ -1,6 +1,6 @@
 <div align="center">
 
-# 🥩 Grill-Me AI
+# Grill-Me AI
 **企业级毒舌面试模拟器 · 简历水分刺客**
 
 <p align="center">
@@ -25,8 +25,9 @@
 
 <div align="center">
   <!-- 建议在这里贴入您的首页或能力雷达图截图 -->
-  <img src="https://picsum.photos/seed/grill/800/400?blur=2" alt="Demo Screenshot Placeholder" width="800" />
-  <p><i>（*发布至 Github 后，请替换上方链接为您自己录制的真实操作 GIF 或截图）</i></p>
+  <img width="1352" height="627" alt="image" src="https://github.com/user-attachments/assets/99b3715f-255d-4703-8354-55bc07ec58db" />
+
+
 </div>
 
 ---
