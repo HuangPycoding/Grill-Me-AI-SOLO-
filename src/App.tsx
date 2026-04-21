@@ -611,6 +611,10 @@ function AnalyzingStage({ role, resume, config, onData, onBack }: { role: string
 // STAGE 3: ASSESSMENT (竞争力实测台)
 // ==========================================
 function AssessmentStage({ data, onNext }: { data: AssessmentData, onNext: () => void }) {
+  // 防御性 fallback 确保即便大模型漏字也不会白屏崩溃
+  const radarData = data.radarData || [];
+  const truthItems = data.truthItems || [];
+
   return (
     <motion.div 
       initial={{ opacity: 0, scale: 0.95 }}
@@ -641,7 +645,7 @@ function AssessmentStage({ data, onNext }: { data: AssessmentData, onNext: () =>
           
           <div className="flex-1 min-h-[300px]">
             <ResponsiveContainer width="100%" height="100%">
-              <RadarChart cx="50%" cy="50%" outerRadius="70%" data={data.radarData}>
+              <RadarChart cx="50%" cy="50%" outerRadius="70%" data={radarData}>
                 <PolarGrid stroke="#3f3f46" />
                 <PolarAngleAxis dataKey="subject" tick={{ fill: '#a1a1aa', fontSize: 12 }} />
                 <PolarRadiusAxis angle={30} domain={[0, 100]} tick={false} axisLine={false} />
@@ -665,16 +669,16 @@ function AssessmentStage({ data, onNext }: { data: AssessmentData, onNext: () =>
               AI 毒舌短评 (Brutal Truth)
             </h3>
             <div className="space-y-4 font-mono text-sm leading-relaxed text-zinc-300">
-              {data.truthItems.map((item, idx) => (
+              {truthItems.map((item, idx) => (
                 <p key={idx}>
                   <span className="text-white font-bold bg-zinc-800 px-1 border border-zinc-700 mr-2">
-                    {item.emoji} {item.title}
+                    {item.emoji || '🔥'} {item.title || '刺客短评'}
                   </span>
-                  {item.content}
+                  {item.content || item}
                 </p>
               ))}
               <p className="text-rose-500 mt-4 text-xs font-bold pt-4 border-t border-rose-900/30">
-                总结：{data.summary}
+                总结：{data.summary || '无话可说，祝你好运。'}
               </p>
             </div>
           </div>

@@ -12,22 +12,36 @@ async function callOpenAICompatibleAPI(apiKey: string, baseUrl: string, modelNam
     throw new Error("API 缺少必填配置项 (Key, Base URL 或 模型名称)。请在首页补充。");
   }
 
-  // 确尾部没有多余的斜杠，并补全标准 chat 路由
+  // 确保尾部没有多余的斜杠，并补全标准 chat 路由
   const endpoint = baseUrl.replace(/\/$/, '') + '/chat/completions';
 
-  const response = await fetch(endpoint, {
-    method: "POST",
-    headers: {
-      "Authorization": `Bearer ${apiKey}`,
-      "Content-Type": "application/json"
-    },
-    body: JSON.stringify({
-      model: modelName,
-      messages: messages,
-      response_format: { type: "json_object" }, // 强制 JSON 模式（大部分兼容模型支持）
-      temperature: 0.7
-    })
-  });
+  const controller = new AbortController();
+  const timeoutId = setTimeout(() => controller.abort(), 40000); // 40秒超时
+
+  let response;
+  try {
+    response = await fetch(endpoint, {
+      method: "POST",
+      headers: {
+        "Authorization": `Bearer ${apiKey}`,
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({
+        model: modelName,
+        messages: messages,
+        response_format: { type: "json_object" }, // 强制 JSON 模式（大部分兼容模型支持）
+        temperature: 0.7
+      }),
+      signal: controller.signal
+    });
+  } catch (err: any) {
+    if (err.name === 'AbortError') {
+      throw new Error("请求大模型 API 超时（超过 40 秒）。可能是网络连接问题、或者大模型服务目前正处于高峰期排队中。请稍后刷新重试。");
+    }
+    throw new Error("请求大模型 API 发生网络错误: " + err.message);
+  } finally {
+    clearTimeout(timeoutId);
+  }
 
   if (!response.ok) {
     const errorData = await response.json().catch(() => ({}));
@@ -35,6 +49,10 @@ async function callOpenAICompatibleAPI(apiKey: string, baseUrl: string, modelNam
   }
 
   const data = await response.json();
+  if (!data?.choices?.[0]?.message?.content) {
+    throw new Error("大模型返回的数据结构异常或为空。它可能受到了审查拦截，或者接口没有返回有效结果。");
+  }
+
   let content = data.choices[0].message.content || "";
   
   // 核心逻辑：大部分模型可能包含多余的话术，导致直接 JSON.parse 崩溃
